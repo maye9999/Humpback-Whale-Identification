@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Whales Identification</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+
+    <style>
+        .upload-drop-zone {
+  border-width: 2px;
+  margin-bottom: 20px;
+}
+
+/* skin.css Style*/
+.upload-drop-zone {
+  color: #ccc;
+  border-style: dashed;
+  border-color: #ccc;
+  line-height: 200px;
+  text-align: center;
+    height: 30vh;
+}
+.upload-drop-zone:hover {
+color:#999;
+}
+.upload-drop-zone.drop {
+  color: #222;
+  border-color: #222;
+}
+body {
+    background: #cccccc url("https://images.pexels.com/photos/953214/pexels-photo-953214.jpeg?cs=srgb&dl=backgrounds-blank-blue-953214.jpg&fm=jpg");
+}
+    </style>
+
+</head>
+<body>
+
+<div class="container text-white" style="height: 80vh;">
+  <h1 class="display-2" align="center" style="margin-top: 10vh">Whales Identification</h1>
+  <p class="lead" align="center" style="margin-bottom: 10vh">Upload any whale image.</p>
+    <div class="container">
+        <div class="upload-drop-zone " id="drop-zone" onclick="$('#files').click()">
+            <div class="h-100 d-flex justify-content-center align-items-center">
+                <h3>Just drag and drop whale here</h3>
+            </div>
+
+
+          </div>
+        <form id="form" method=post action="/" enctype=multipart/form-data>
+        <input type="file" id="files" name="files" style="display:none"/>
+            </form>
+    </div>
+</div>
+
+<!--<h1>Whales Recognition</h1>-->
+<!--<form method=post action="/" enctype=multipart/form-data>-->
+    <!--<p>-->
+        <!--<input type="file" id="files" name="files"/>-->
+        <!--<output id="list"></output>-->
+        <!--<input type=submit value=Upload>-->
+    <!--</p>-->
+<!--</form>-->
+
+{% if file_name %}
+<div class="container text-white" id="results">
+    <div class="row align-items-center" style="margin-bottom: 10vh">
+        <div class="col-6 text-center" style="margin-bottom: 10px">
+            <h2>Your Input</h2>
+            <img src="/uploads/{{file_name}}" class="img-fluid">
+        </div>
+        <div class="col-6 text-center" style="margin-bottom: 10px">
+            <h2>Bounding Box result</h2>
+            <img class="img-fluid" src="/uploads/{{file_name}}-bbox.jpg"/>
+        </div>
+    </div>
+    <div class="text-center" style="margin-bottom: 10vh">
+        <h2>Search Results</h2>
+    </div>
+
+    <div class="row align-items-center">
+        {% for i, j in predictions %}
+        <div class="col-md-4 col-sm-6 text-center" style="margin-bottom: 10px">
+            <img class="img-fluid" title="{{j}}" src="/imgs/{{i}}"/>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+{% endif %}
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+
+<script>
+    var imageLoader = document.getElementById('files');
+    imageLoader.addEventListener('change', onChange, false);
+
+    function onChange(e) {
+        document.getElementById("form").submit();
+    }
+
+    let dropbox;
+    dropbox = document.getElementById("drop-zone");
+    dropbox.addEventListener("dragenter", dragenter, false);
+    dropbox.addEventListener("dragover", dragover, false);
+    dropbox.addEventListener("drop", drop, false);
+
+    function dragenter(e) {
+  e.stopPropagation();
+  e.preventDefault();
+}
+
+function dragover(e) {
+  e.stopPropagation();
+  e.preventDefault();
+}
+
+function drop(e) {
+  e.stopPropagation();
+  e.preventDefault();
+  //you can check e's properties
+  //console.log(e);
+  var dt = e.dataTransfer;
+  var files = dt.files;
+
+  //this code line fires your 'handleImage' function (imageLoader change event)
+  imageLoader.files = files;
+
+}
+
+$(document).ready(function () {
+    $('html, body').animate({
+      scrollTop: $("#results").offset().top + 'px'
+    }, 'slow');
+});
+</script>
+
+
+</body>
+</html>
